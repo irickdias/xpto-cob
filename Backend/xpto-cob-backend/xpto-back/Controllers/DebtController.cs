@@ -19,6 +19,7 @@ namespace xpto_back.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadCsv(IFormFile file)
         {
+            Console.WriteLine($"Arquivo recebido: {file?.FileName}, Tamanho: {file?.Length}");
             var uploadTotal = await _repo.UploadCsv(file);
 
             if(uploadTotal == 0)

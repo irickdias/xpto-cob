@@ -38,13 +38,44 @@ export default function HandleFiles() {
         inputRef.current?.click();
     };
 
+    const handleUploadCsv = async () => {
+        console.log("teste entrou");
+
+        const formData = new FormData();
+        formData.append('file', file!); // 'file' deve bater com o nome do parâmetro no backend
+        console.log("teste file", file);
+
+        try {
+            const response = await fetch('https://localhost:7249/xpto/debt/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            console.log("teste response", response)
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Erro do servidor: ${errorText}`);
+            }
+            
+            setFile(null);
+            const data = await response.json();
+            alert(data.message || 'Arquivo enviado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao enviar arquivo:', error);
+            alert('Erro ao importar o arquivo.');
+        }
+    }
+    // max-w-md mx-auto mt-10 space-y-4
+
     return (
-        <div className="max-w-md mx-auto mt-10 space-y-4">
+        <div className="w-full space-y-4">
+            <p className="">Importar arquivo CSV de dívidas</p>
             <div
                 onClick={handleDivClick}
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
-                className="border-2 border-dashed border-primary/80 rounded p-6 text-center text-gray-600 cursor-pointer hover:bg-gray-300 transition-all"
+                className="border-2 border-dashed border-primary/80 rounded p-6 text-center text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-900 transition-all"
             >
                 <p>Arraste e solte um arquivo <em className="text-green-600">CSV</em> aqui ou clique para selecionar</p>
                 <input
@@ -57,15 +88,29 @@ export default function HandleFiles() {
             </div>
 
             {file && (
-                <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
-                    <span>{file.name}</span>
-                    <button
-                        onClick={handleRemoveFile}
-                        className="text-red-500 hover:text-red-700 text-sm hover:cursor-pointer"
-                    >
-                        Remover
-                    </button>
+                <div>
+                    <div className="flex items-center justify-between p-2 rounded-sm border border-primary/80">
+                        <span>{file.name}</span>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={handleRemoveFile}
+                                className="text-red-500 hover:text-red-700 text-sm hover:cursor-pointer"
+                            >
+                                Remover
+                            </button>
+
+                            <button
+                                onClick={handleUploadCsv}
+                                className="text-green-500 hover:text-green-700 text-sm hover:cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+
             )}
 
             <p>Preview</p>
