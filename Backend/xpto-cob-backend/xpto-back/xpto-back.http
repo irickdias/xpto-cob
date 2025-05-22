@@ -1,0 +1,6 @@
+@xpto_back_HostAddress = http://localhost:5002
+
+GET {{xpto_back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
