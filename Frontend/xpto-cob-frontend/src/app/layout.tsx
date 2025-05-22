@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 import Header from "@/components/Header";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -24,6 +25,8 @@ export default function RootLayout({
           <Header />
           {children}
         </ThemeProvider>
+
+        <ToastContainer position="bottom-right" autoClose={3000} />
       </body>
     </html>
   );

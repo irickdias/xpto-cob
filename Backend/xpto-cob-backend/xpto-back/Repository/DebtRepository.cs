@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.Net.Http.Headers;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xpto_back.Data;
 using xpto_back.Interfaces;
 using xpto_back.Models;
+using xpto_back.Models.DTOs;
 
 namespace xpto_back.Repository
 {
@@ -18,7 +23,64 @@ namespace xpto_back.Repository
 
         public async Task<List<Debt>> GetAll()
         {
-            return await _context.Debts.Select(d => d).ToListAsync();
+            return await _context.Debts.ToListAsync();
+        }
+
+        public async Task<int> UpdateDebts()
+        {
+            var debts = await _context.Debts.ToListAsync();
+            int updated = 0;
+
+            foreach (var debt in debts)
+            {
+                var calc = await CallCalculationApi(debt);
+                
+                if (calc == null) // nao foi possivel realizar o calculo, ou ainda estava dentro do prazo
+                    continue;
+
+                debt.UpdatedAmount = calc.ValorAtualizado;
+                debt.DiscountAmount = debt.OriginalAmount * (calc.DescontoMaximo / 100);
+                debt.UpdateDate = DateTime.Now;
+                updated++;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return updated;
+        }
+
+        private async Task<CalculationResponse?> CallCalculationApi(Debt debt)
+        {
+            int atraso = (DateTime.Now - debt.DueDate).Days;
+
+            if (atraso < 0) // ainda está no prazo, entao nao faz requisicao
+                return null;
+
+            var obj = new CalculationRequest
+            {
+                TipoContrato = debt.ContractType,
+                Valor = debt.OriginalAmount,
+                Atraso = atraso
+            };
+
+            using var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
+
+            var json = JsonSerializer.Serialize(obj);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(
+                "https://api.cobmais.com.br/testedev/calculo?ver",
+                content
+            );
+
+            Console.WriteLine(response);
+
+            if (!response.IsSuccessStatusCode) // nao foi possivel realizar o calculo, e retornou erro
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<CalculationResponse>();
         }
 
         public async Task<int> UploadCsv(IFormFile file)
