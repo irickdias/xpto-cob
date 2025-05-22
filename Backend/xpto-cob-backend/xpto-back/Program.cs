@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using xpto_back.Data;
+using xpto_back.Interfaces;
+using xpto_back.Repository;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -20,6 +24,11 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services
+builder.Services.AddScoped<IDebtRepository, DebtRepository>();
+
+builder.Services.AddDbContext<ApplicationDBContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 //builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 //   .AddNegotiate();

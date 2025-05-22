@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using xpto_back.Models;
 
 namespace xpto_back.Data
 {
@@ -9,6 +10,6 @@ namespace xpto_back.Data
             
         }
 
-        public DbSet<Debts> Dividas { get; set; }
+        public DbSet<Debt> Debts { get; set; }
     }
 }
