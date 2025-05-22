@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using xpto_back.Data;
 using xpto_back.Interfaces;
 using xpto_back.Models;
@@ -12,6 +14,11 @@ namespace xpto_back.Repository
         public DebtRepository(ApplicationDBContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<Debt>> GetAll()
+        {
+            return await _context.Debts.Select(d => d).ToListAsync();
         }
 
         public async Task<int> UploadCsv(IFormFile file)

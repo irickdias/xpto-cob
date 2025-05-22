@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 type DebtRow = {
     cpf: string;
@@ -42,10 +43,12 @@ export default function HandleFiles() {
         console.log("teste entrou");
 
         const formData = new FormData();
-        formData.append('file', file!); // 'file' deve bater com o nome do parâmetro no backend
+        formData.append('file', file!);
         console.log("teste file", file);
 
         try {
+            const loadingToast = toast.loading("Importando dados...");
+            
             const response = await fetch('https://localhost:7249/xpto/debt/upload', {
                 method: 'POST',
                 body: formData,
@@ -53,17 +56,20 @@ export default function HandleFiles() {
 
             console.log("teste response", response)
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Erro do servidor: ${errorText}`);
+            toast.dismiss(loadingToast);
+
+            if (response.ok) {
+                toast.success("Subrocesso cadastrado!");
+                setFile(null);
+            }
+            else {
+                toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente");
             }
             
-            setFile(null);
-            const data = await response.json();
-            alert(data.message || 'Arquivo enviado com sucesso!');
+            // const data = await response.json();
         } catch (error) {
             console.error('Erro ao enviar arquivo:', error);
-            alert('Erro ao importar o arquivo.');
+            toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente");
         }
     }
     // max-w-md mx-auto mt-10 space-y-4

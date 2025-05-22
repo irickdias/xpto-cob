@@ -41,13 +41,13 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// Cria o banco 'cobdev' a partir da Migration criada, caso ainda não existir
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+    db.Database.Migrate();
+}
 
-//app.UseAuthorization();
-
-app.UseCors(MyAllowSpecificOrigins);
-
-app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -55,5 +55,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseHttpsRedirection();
+
+//app.UseAuthorization();
+
+app.UseCors(MyAllowSpecificOrigins);
+
+app.MapControllers();
 
 app.Run();

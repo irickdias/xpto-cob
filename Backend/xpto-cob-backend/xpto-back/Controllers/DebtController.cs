@@ -16,10 +16,19 @@ namespace xpto_back.Controllers
             _repo = repo;
         }
 
+        [HttpGet]
+        [Route("/")]
+        public async Task<IActionResult> GetAll()
+        {
+            var debts = await _repo.GetAll();
+
+            return Ok(debts);
+        }
+
         [HttpPost("upload")]
         public async Task<IActionResult> UploadCsv(IFormFile file)
         {
-            Console.WriteLine($"Arquivo recebido: {file?.FileName}, Tamanho: {file?.Length}");
+            // Console.WriteLine($"Arquivo recebido: {file?.FileName}, Tamanho: {file?.Length}");
             var uploadTotal = await _repo.UploadCsv(file);
 
             if(uploadTotal == 0)
