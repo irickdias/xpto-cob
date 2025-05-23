@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -10,6 +11,7 @@ using xpto_back.Data;
 using xpto_back.Interfaces;
 using xpto_back.Models;
 using xpto_back.Models.DTOs;
+using xpto_back.Models.Mappers;
 
 namespace xpto_back.Repository
 {
@@ -22,9 +24,9 @@ namespace xpto_back.Repository
             _context = context;
         }
 
-        public async Task<List<Debt>> GetAll()
+        public async Task<List<DebtFormattedDto>> GetAll()
         {
-            return await _context.Debts.ToListAsync();
+            return await _context.Debts.Select(d => d.ToDebtFormatedDto()).ToListAsync();
         }
 
         public async Task<int> UpdateDebts()

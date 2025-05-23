@@ -18,7 +18,6 @@ namespace xpto_back.Controllers
         }
 
         [HttpGet]
-        [Route("/")]
         public async Task<IActionResult> GetAll()
         {
             var debts = await _repo.GetAll();

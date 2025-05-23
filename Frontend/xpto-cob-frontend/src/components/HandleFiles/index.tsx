@@ -3,16 +3,20 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-type DebtRow = {
-    cpf: string;
-    customer: string;
-    contract: string;
-    dueDate: string;
-    amount: string;
-    contractType: string;
-};
+// type DebtRow = {
+//     cpf: string;
+//     customer: string;
+//     contract: string;
+//     dueDate: string;
+//     amount: string;
+//     contractType: string;
+// };
 
-export default function HandleFiles() {
+interface handleFilesprops {
+    setUpdateData: any;
+}
+
+export default function HandleFiles({setUpdateData}: handleFilesprops) {
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,6 +65,7 @@ export default function HandleFiles() {
             if (response.ok) {
                 toast.success("Arquivo importado com sucesso!");
                 setFile(null);
+                setUpdateData(Math.random());
             }
             else {
                 toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente.");
@@ -76,12 +81,12 @@ export default function HandleFiles() {
 
     return (
         <div className="w-full space-y-4">
-            <p className="">Importar arquivo CSV de dívidas</p>
+            <p className="font-semibold">Importar arquivo CSV de dívidas</p>
             <div
                 onClick={handleDivClick}
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
-                className="border-2 border-dashed border-primary/80 rounded p-6 text-center text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-900 transition-all"
+                className="border-2 border-dashed border-primary/80 rounded p-6 text-center text-gray-600 dark:text-gray-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all"
             >
                 <p>Arraste e solte um arquivo <em className="text-green-600">CSV</em> aqui ou clique para selecionar</p>
                 <input
@@ -118,8 +123,6 @@ export default function HandleFiles() {
 
 
             )}
-
-            <p>Preview</p>
         </div>
     );
 }

@@ -16,7 +16,7 @@ export default function Header() {
 
     return (
         <section className="w-full h-[6vh] flex justify-center bg-primary">
-            <div className="w-[50%] h-full flex justify-between items-center">
+            <div className="w-[60%] h-full flex justify-between items-center">
                 <div className="text-2xl font-semibold text-white">
                     <p>XPTO Cobranças</p>
                 </div>
