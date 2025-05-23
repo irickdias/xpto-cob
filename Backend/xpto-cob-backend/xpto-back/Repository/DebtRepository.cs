@@ -75,7 +75,7 @@ namespace xpto_back.Repository
                 content
             );
 
-            Console.WriteLine(response);
+            // Console.WriteLine(response);
 
             if (!response.IsSuccessStatusCode) // nao foi possivel realizar o calculo, e retornou erro
                 return null;
@@ -98,7 +98,7 @@ namespace xpto_back.Repository
             {
                 if (isFirstLine)
                 {
-                    isFirstLine = false; // pula o cabeçalho
+                    isFirstLine = false; // pula o cabecalho
                     continue;
                 }
 
@@ -129,12 +129,6 @@ namespace xpto_back.Repository
             }
 
             await _context.Debts.AddRangeAsync(debtsToInsert);
-
-            //// Etapa 2: salvar no banco
-            //foreach (var debt in debtsToInsert)
-            //{
-            //    await _context.Debts.AddAsync(debt);
-            //}
 
             await _context.SaveChangesAsync();
             return debtsToInsert.Count;

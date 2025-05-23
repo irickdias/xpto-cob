@@ -48,7 +48,7 @@ export default function HandleFiles() {
 
         try {
             const loadingToast = toast.loading("Importando dados...");
-            
+
             const response = await fetch('https://localhost:7249/xpto/debt/upload', {
                 method: 'POST',
                 body: formData,
@@ -59,17 +59,17 @@ export default function HandleFiles() {
             toast.dismiss(loadingToast);
 
             if (response.ok) {
-                toast.success("Subrocesso cadastrado!");
+                toast.success("Arquivo importado com sucesso!");
                 setFile(null);
             }
             else {
-                toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente");
+                toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente.");
             }
             
             // const data = await response.json();
         } catch (error) {
-            console.error('Erro ao enviar arquivo:', error);
-            toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente");
+            console.error('Erro ao importar arquivo:', error);
+            toast.error("Erro ao importar arquivo. Verique o arquivo e tente novamente.");
         }
     }
     // max-w-md mx-auto mt-10 space-y-4
