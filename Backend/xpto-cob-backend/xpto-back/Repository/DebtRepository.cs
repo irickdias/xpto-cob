@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Globalization;
+using System.Net.Http.Headers;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json;
@@ -132,6 +133,23 @@ namespace xpto_back.Repository
 
             await _context.SaveChangesAsync();
             return debtsToInsert.Count;
+        }
+
+        public async Task<byte[]> ExportDebts()
+        {
+            var debts = await _context.Debts.ToListAsync();
+
+            var csv = new StringBuilder();
+            csv.AppendLine("CPF;ATUALIZACAO_DATA;CONTRATO;VALOR_ORIGINAL;VALOR_ATUALIZADO;VALOR_DESCONTO");
+
+            var culture = new CultureInfo("pt-BR");
+
+            foreach (var debt in debts)
+            {
+                csv.AppendLine($"{debt.Cpf};{debt.UpdateDate:dd/MM/yyyy};{debt.ContractNumber};{debt.OriginalAmount.ToString("N2", culture)};{debt.UpdatedAmount?.ToString("N2", culture)};{debt.DiscountAmount?.ToString("N2", culture)}");
+            }
+
+            return Encoding.UTF8.GetBytes(csv.ToString());
         }
     }
 }

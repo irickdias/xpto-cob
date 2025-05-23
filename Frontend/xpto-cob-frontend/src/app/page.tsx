@@ -42,10 +42,11 @@ export default function Home() {
 
   async function exportDebts() {
     setSendingRequestExport(true);
+    
     try {
       const loadingToast = toast.loading("Exportando...");
 
-      const response = await fetch('https://localhost:7249/xpto/debt/update-debts', {
+      const response = await fetch('https://localhost:7249/xpto/debt/export', {
         method: 'GET'
       });
 
@@ -54,6 +55,25 @@ export default function Home() {
       toast.dismiss(loadingToast);
 
       if (response.ok) {
+        // baixa arquivo
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+
+        // cria uma tag a invisivel e depois libera
+        a.href = url;
+
+        const today = new Date();
+        const tDay = today.getDate().toString().padStart(2, '0');
+        const tMonth = (today.getMonth() + 1).toString().padStart(2, '0');
+        const tYear = today.getFullYear();
+        a.download = `Divida-Atualizada-${tDay}-${tMonth}-${tYear}.csv`;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
         toast.success("Exportação realizada com sucesso!");
       }
       else {
@@ -84,6 +104,7 @@ export default function Home() {
             Atualizar dívidas
           </button>
           <button 
+            onClick={exportDebts}
             className={`py-1 px-2 flex items-center gap-1 text-gray-900 font-semibold bg-green-400 rounded-sm w-auto hover:cursor-pointer disabled:cursor-default transition-all ${sendingRequestUpdate || sendingRequestExport ? '' : 'hover:bg-green-400/80'}`}
             disabled={sendingRequestUpdate || sendingRequestExport}
             >

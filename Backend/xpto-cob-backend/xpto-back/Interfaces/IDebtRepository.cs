@@ -8,5 +8,6 @@ namespace xpto_back.Interfaces
         Task<List<Debt>> GetAll();
         Task<int> UploadCsv(IFormFile file);
         Task<int> UpdateDebts();
+        Task<byte[]> ExportDebts();
     }
 }

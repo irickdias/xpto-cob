@@ -51,5 +51,16 @@ namespace xpto_back.Controllers
             return Ok(new { message = $"Atualizações concluídas com sucesso. Total: {updatedTotal}" });
         }
 
+        [HttpGet]
+        [Route("export")]
+        public async Task<IActionResult> ExportDebts()
+        {
+            var csv_bytes = await _repo.ExportDebts();
+
+            var filename = $"Divida-Atualizada-{DateTime.Now:dd-MM-yyyy}.csv";
+
+            return File(csv_bytes, "text/csv", filename);
+        }
+
     }
 }
