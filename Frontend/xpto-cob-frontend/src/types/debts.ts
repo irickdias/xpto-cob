@@ -10,3 +10,9 @@ interface Debt{
     updatedAmount: string | null;
     discountAmount: string | null;
 }
+
+interface DebtsResponse {
+    data: Debt[];
+    totalPages: number;
+    pageNumber: number;
+}

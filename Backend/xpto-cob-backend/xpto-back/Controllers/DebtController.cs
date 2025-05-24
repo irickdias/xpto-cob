@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Update;
+using xpto_back.Helpers;
 using xpto_back.Interfaces;
 using xpto_back.Models;
 
@@ -18,9 +19,9 @@ namespace xpto_back.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
-            var debts = await _repo.GetAll();
+            var debts = await _repo.GetAll(query);
 
             return Ok(debts);
         }

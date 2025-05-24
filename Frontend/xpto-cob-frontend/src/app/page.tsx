@@ -1,7 +1,11 @@
 'use client'
 
+import CustomSearch from "@/components/CustomSearch";
+import CustomSelect from "@/components/CustomSelect";
 import DebtsTable from "@/components/DebtsTable";
 import HandleFiles from "@/components/HandleFiles";
+import PaginationNavigator from "@/components/PaginationNavigator";
+import { api } from "@/utils/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -13,26 +17,42 @@ export default function Home() {
   const [updatingData, setUpdatingData] = useState(false);
   const [sendingRequestUpdate, setSendingRequestUpdate] = useState(false);
   const [sendingRequestExport, setSendingRequestExport] = useState(false);
-  const [debts, setDebts] = useState<Debt[] | null>(null);
+  const [debts, setDebts] = useState<DebtsResponse | any>("");
   const [updateData, setUpdateData] = useState(0);
+  const [filterBy, setFilterBy] = useState(1);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const filters = [
+    {
+      id: 1,
+      name: "Nome"
+    },
+    {
+      id: 2,
+      name: "CPF"
+    },
+    {
+      id: 3,
+      name: "Contrato"
+    }
+    
+  ]
 
   useEffect(() => {
     getDebts();
   }, [updateData]);
 
+
   async function getDebts() {
     setUpdatingData(true);
     try {
-      const loadingToast = toast.loading("Atualizando...");
 
-      const response : any = await fetch('https://localhost:7249/xpto/debt', {
+      const response : any = await fetch(`${api}xpto/debt?customer=${filterBy == 1 ? search : ''}&contract=${filterBy == 3 ? search : ''}&cpf=${filterBy == 2 ? search : ''}`, {
         method: 'GET'
       });
       const json = await response.json();
 
       //console.log("teste response", json)
-
-      toast.dismiss(loadingToast);
 
       if (response.ok) {
         setDebts(json);
@@ -152,7 +172,16 @@ export default function Home() {
           </button>
         </div>
 
-        <DebtsTable debts={debts}/>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <CustomSearch search={search} setSearch={setSearch} setUpdateData={setUpdateData}/>
+            {/* <p>Filtrar por:</p> */}
+            <CustomSelect options={filters} value={filterBy} onChange={(e: any) => {setFilterBy(e), setSearch("")}} required={false}/>
+          </div>
+          <PaginationNavigator totalPages={debts.totalPages} currentPage={page} onPageChange={setPage}/>
+        </div>
+
+        <DebtsTable debts={debts.data}/>
       </div>
     </section>
   );

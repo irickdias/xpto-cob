@@ -21,7 +21,7 @@ export default function DebtsTable({ debts }: DebtsTableProps) {
             </thead>
             <tbody className="text-sm">
                 {
-                    debts ? debts.map((item: Debt, key: number) => (
+                    debts && debts.length > 0 ? debts.map((item: Debt, key: number) => (
                         <tr key={key}>
                             <td>{item.customerName}</td>
                             <td>{item.cpf}</td>
@@ -35,7 +35,10 @@ export default function DebtsTable({ debts }: DebtsTableProps) {
                         </tr>
                     ))
                         :
-                        <></>
+                        <tr className="bg-red-200 dark:bg-pink-950">
+                            <td colSpan={9} >Nenhuma Dívida encontrada</td>
+                            
+                        </tr>
                 }
             </tbody>
 

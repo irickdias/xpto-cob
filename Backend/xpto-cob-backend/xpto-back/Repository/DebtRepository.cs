@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using xpto_back.Data;
+using xpto_back.Helpers;
 using xpto_back.Interfaces;
 using xpto_back.Models;
 using xpto_back.Models.DTOs;
@@ -24,9 +25,33 @@ namespace xpto_back.Repository
             _context = context;
         }
 
-        public async Task<List<DebtFormattedDto>> GetAll()
+        public async Task<PaginatedList<DebtFormattedDto>> GetAll(QueryObject query)
         {
-            return await _context.Debts.Select(d => d.ToDebtFormatedDto()).ToListAsync();
+            var debtsQuery = _context.Debts.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.customer))
+                debtsQuery = debtsQuery.Where(d => d.CustomerName.Contains(query.customer));
+
+            if (!string.IsNullOrWhiteSpace(query.contract))
+                debtsQuery = debtsQuery.Where(d => d.ContractNumber.Equals(query.contract));
+
+            if (!string.IsNullOrWhiteSpace(query.cpf))
+                debtsQuery = debtsQuery.Where(d => d.Cpf.Equals(query.cpf));
+
+            var debts = await debtsQuery.Select(d => d.ToDebtFormatedDto()).ToListAsync();
+
+            var totalCount = debts.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.pageSize);
+
+            var skipNumber = (query.pageNumber - 1) * query.pageSize;
+            var pagedDebts = debts.Skip(skipNumber).Take(query.pageSize).ToList();
+
+            return new PaginatedList<DebtFormattedDto>
+            {
+                data = pagedDebts,
+                totalPages = totalPages,
+                totalRecords = totalCount
+            };
         }
 
         public async Task<int> UpdateDebts()
