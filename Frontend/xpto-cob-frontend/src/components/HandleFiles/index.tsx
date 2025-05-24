@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { api } from "@/utils/api";
 
 // type DebtRow = {
 //     cpf: string;
@@ -43,22 +44,20 @@ export default function HandleFiles({setUpdateData}: handleFilesprops) {
         inputRef.current?.click();
     };
 
-    const handleUploadCsv = async () => {
-        console.log("teste entrou");
-
+    async function handleUploadCsv() {
         const formData = new FormData();
         formData.append('file', file!);
-        console.log("teste file", file);
+        //console.log("teste file", file);
 
         try {
             const loadingToast = toast.loading("Importando dados...");
 
-            const response = await fetch('https://localhost:7249/xpto/debt/upload', {
+            const response = await fetch(`${api}xpto/debt/upload`, {
                 method: 'POST',
                 body: formData,
             });
 
-            console.log("teste response", response)
+            //console.log("teste response", response)
 
             toast.dismiss(loadingToast);
 

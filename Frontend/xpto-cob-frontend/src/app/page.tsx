@@ -75,7 +75,7 @@ export default function Home() {
     try {
       const loadingToast = toast.loading("Atualizando...");
 
-      const response = await fetch('https://localhost:7249/xpto/debt/update-debts', {
+      const response = await fetch(`${api}xpto/debt/update-debts`, {
         method: 'GET'
       });
 
@@ -105,7 +105,7 @@ export default function Home() {
     try {
       const loadingToast = toast.loading("Exportando...");
 
-      const response = await fetch('https://localhost:7249/xpto/debt/export', {
+      const response = await fetch(`${api}xpto/debt/export`, {
         method: 'GET'
       });
 
@@ -150,7 +150,7 @@ export default function Home() {
 
   return (
     <section className="w-full h-[94vh] flex justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="w-[60%] relative p-4 space-y-4 bg-white dark:bg-gray-800 ">
+      <div className="w-[60%] overflow-auto relative p-4 space-y-4 bg-white dark:bg-gray-800 ">
         <HandleFiles setUpdateData={setUpdateData}/>
 
         <div className="flex justify-end gap-2">
