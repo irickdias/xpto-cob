@@ -166,6 +166,7 @@ namespace xpto_back.Repository
         {
             var debts = await _context.Debts.ToListAsync();
 
+            // cria a string dos valores separadas por ;
             var csv = new StringBuilder();
             csv.AppendLine("CPF;ATUALIZACAO_DATA;CONTRATO;VALOR_ORIGINAL;VALOR_ATUALIZADO;VALOR_DESCONTO");
 
@@ -176,7 +177,20 @@ namespace xpto_back.Repository
                 csv.AppendLine($"{debt.Cpf};{debt.UpdateDate:dd/MM/yyyy};{debt.ContractNumber};{debt.OriginalAmount.ToString("N2", culture)};{debt.UpdatedAmount?.ToString("N2", culture)};{debt.DiscountAmount?.ToString("N2", culture)}");
             }
 
-            return Encoding.UTF8.GetBytes(csv.ToString());
+            var content = csv.ToString();
+            var bytes = Encoding.UTF8.GetBytes(content);
+
+            // verifica a existencia da pasta destino, criando senao existir
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "ServerSimulator", "UpdatedDebtsCSV");
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            // salava o csv atualizado nesta pasta
+            var fileName = $"Divida-Atualizada-{DateTime.Now:dd-MM-yyyy}.csv";
+            var filePath = Path.Combine(folderPath, fileName);
+            await File.WriteAllTextAsync(filePath, content, Encoding.UTF8);
+
+            return bytes;
         }
     }
 }

@@ -35,8 +35,36 @@ namespace xpto_back.Controllers
             if(uploadTotal == 0)
                 BadRequest("Nenhum arquivo enviado.");
 
-            //return Ok(new { message = $"Importação concluída. Total de dívidas inseridas: {debtsToInsert.Count}" });
             return Ok(new { message = $"Importação concluída com sucesso. Total: {uploadTotal}" });
+        }
+
+        [HttpPost("import-from-folder")]
+        public async Task<IActionResult> ImportFromFolder()
+        {
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "ServerSimulator", "DebtsCSV");
+
+            // verifica existencia da pasta
+            if (!Directory.Exists(folderPath))
+                return NotFound("Pasta 'DebtsCSV' não encontrada!");
+
+            // verifica existencia de arquivo csv
+            var csvFiles = Directory.GetFiles(folderPath, "*.csv");
+            if (csvFiles.Length == 0)
+                return NotFound("Nenhum arquivo csv encontrado na pasta 'DebtsCSV'");
+
+            var filePath = csvFiles[0];
+
+            // le o arquivo e transforma para FormFile
+            await using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            var formFile = new FormFile(stream, 0, stream.Length, "file", Path.GetFileName(filePath));
+
+            // realiza a importacao
+            var result = await _repo.UploadCsv(formFile);
+
+            if (result == 0)
+                return BadRequest("Falha na importação do arquivo");
+
+            return Ok($"Importação realizada com sucesso a partir do arquivo: {Path.GetFileName(filePath)}");
         }
 
         [HttpGet]

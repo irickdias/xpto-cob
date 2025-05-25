@@ -150,7 +150,7 @@ export default function Home() {
 
   return (
     <section className="w-full h-[94vh] flex justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="w-[60%] overflow-auto relative p-4 space-y-4 bg-white dark:bg-gray-800 ">
+      <div className="w-[65%] overflow-auto relative p-4 space-y-4 bg-white dark:bg-gray-800 ">
         <HandleFiles setUpdateData={setUpdateData}/>
 
         <div className="flex justify-end gap-2">
