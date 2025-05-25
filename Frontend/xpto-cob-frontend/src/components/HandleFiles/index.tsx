@@ -80,7 +80,7 @@ export default function HandleFiles({setUpdateData}: handleFilesprops) {
 
     return (
         <div className="w-full space-y-4">
-            <p className="font-semibold">Importar arquivo CSV de dívidas</p>
+            <p className="font-semibold text-md">Importar arquivo CSV de dívidas</p>
             <div
                 onClick={handleDivClick}
                 onDrop={handleDrop}

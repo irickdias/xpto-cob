@@ -35,7 +35,7 @@ export default function Home() {
       id: 3,
       name: "Contrato"
     }
-    
+
   ]
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function Home() {
     setUpdatingData(true);
     try {
 
-      const response : any = await fetch(`${api}xpto/debt?customer=${filterBy == 1 ? search : ''}&contract=${filterBy == 3 ? search : ''}&cpf=${filterBy == 2 ? search : ''}`, {
+      const response: any = await fetch(`${api}xpto/debt?customer=${filterBy == 1 ? search : ''}&contract=${filterBy == 3 ? search : ''}&cpf=${filterBy == 2 ? search : ''}`, {
         method: 'GET'
       });
       const json = await response.json();
@@ -150,38 +150,41 @@ export default function Home() {
 
   return (
     <section className="w-full h-[94vh] flex justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="w-[65%] overflow-auto relative p-4 space-y-4 bg-white dark:bg-gray-800 ">
-        <HandleFiles setUpdateData={setUpdateData}/>
+      <div className="w-[65%] overflow-auto relative p-4 bg-white dark:bg-gray-800 ">
+        <HandleFiles setUpdateData={setUpdateData} />
 
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={updateDebts}
-            className={`py-1 px-2 flex items-center gap-1 text-gray-900 font-semibold bg-blue-400 rounded-sm w-auto hover:cursor-pointer disabled:cursor-default transition-all ${sendingRequestUpdate || sendingRequestExport ? '' : 'hover:bg-blue-400/80'}`}
-            disabled={sendingRequestUpdate || sendingRequestExport}
-          >
-            {sendingRequestUpdate ? <AiOutlineLoading className="animate-spin w-5 h-5" /> : <MdOutlineRefresh className="w-5 h-5" />}
-            Atualizar dívidas
-          </button>
-          <button
-            onClick={exportDebts}
-            className={`py-1 px-2 flex items-center gap-1 text-gray-900 font-semibold bg-green-400 rounded-sm w-auto hover:cursor-pointer disabled:cursor-default transition-all ${sendingRequestUpdate || sendingRequestExport ? '' : 'hover:bg-green-400/80'}`}
-            disabled={sendingRequestUpdate || sendingRequestExport}
-          >
-            {sendingRequestExport ? <AiOutlineLoading className="animate-spin w-5 h-5" /> : <FaFileExport className="w-5 h-5" />}
-            Exportar dívidas
-          </button>
-        </div>
-
-        <div className="flex justify-between items-center">
+        <div className="mt-8 flex justify-between items-center">
+          <p className="font-semibold text-xl">Dívidas importadas</p>
           <div className="flex items-center gap-2">
-            <CustomSearch search={search} setSearch={setSearch} setUpdateData={setUpdateData}/>
-            {/* <p>Filtrar por:</p> */}
-            <CustomSelect options={filters} value={filterBy} onChange={(e: any) => {setFilterBy(e), setSearch("")}} required={false}/>
+            <button
+              onClick={updateDebts}
+              className={`py-1 px-2 flex items-center gap-1 text-gray-900 font-semibold bg-blue-400 rounded-sm w-auto hover:cursor-pointer disabled:cursor-default transition-all ${sendingRequestUpdate || sendingRequestExport ? '' : 'hover:bg-blue-400/80'}`}
+              disabled={sendingRequestUpdate || sendingRequestExport}
+            >
+              {sendingRequestUpdate ? <AiOutlineLoading className="animate-spin w-5 h-5" /> : <MdOutlineRefresh className="w-5 h-5" />}
+              Atualizar dívidas
+            </button>
+            <button
+              onClick={exportDebts}
+              className={`py-1 px-2 flex items-center gap-1 text-gray-900 font-semibold bg-green-400 rounded-sm w-auto hover:cursor-pointer disabled:cursor-default transition-all ${sendingRequestUpdate || sendingRequestExport ? '' : 'hover:bg-green-400/80'}`}
+              disabled={sendingRequestUpdate || sendingRequestExport}
+            >
+              {sendingRequestExport ? <AiOutlineLoading className="animate-spin w-5 h-5" /> : <FaFileExport className="w-5 h-5" />}
+              Exportar dívidas
+            </button>
           </div>
-          <PaginationNavigator totalPages={debts.totalPages} currentPage={page} onPageChange={setPage}/>
         </div>
 
-        <DebtsTable debts={debts.data}/>
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <CustomSearch search={search} setSearch={setSearch} setUpdateData={setUpdateData} />
+            {/* <p>Filtrar por:</p> */}
+            <CustomSelect options={filters} value={filterBy} onChange={(e: any) => { setFilterBy(e), setSearch("") }} required={false} />
+          </div>
+          <PaginationNavigator totalPages={debts.totalPages} currentPage={page} onPageChange={setPage} />
+        </div>
+
+        <DebtsTable debts={debts.data} />
       </div>
     </section>
   );
