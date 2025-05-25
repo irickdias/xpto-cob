@@ -38,7 +38,7 @@ namespace xpto_back.Controllers
             return Ok(new { message = $"Importação concluída com sucesso. Total: {uploadTotal}" });
         }
 
-        [HttpPost("import-from-folder")]
+        [HttpPost("import")]
         public async Task<IActionResult> ImportFromFolder()
         {
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "ServerSimulator", "DebtsCSV");

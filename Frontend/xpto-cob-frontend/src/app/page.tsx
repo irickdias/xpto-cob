@@ -40,14 +40,14 @@ export default function Home() {
 
   useEffect(() => {
     getDebts();
-  }, [updateData]);
+  }, [updateData, page]);
 
 
   async function getDebts() {
     setUpdatingData(true);
     try {
 
-      const response: any = await fetch(`${api}xpto/debt?customer=${filterBy == 1 ? search : ''}&contract=${filterBy == 3 ? search : ''}&cpf=${filterBy == 2 ? search : ''}`, {
+      const response: any = await fetch(`${api}xpto/debt?customer=${filterBy == 1 ? search : ''}&contract=${filterBy == 3 ? search : ''}&cpf=${filterBy == 2 ? search : ''}&pageNumber=${page}`, {
         method: 'GET'
       });
       const json = await response.json();
@@ -177,7 +177,7 @@ export default function Home() {
 
         <div className="mt-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <CustomSearch search={search} setSearch={setSearch} setUpdateData={setUpdateData} />
+            <CustomSearch search={search} setSearch={setSearch} setUpdateData={setUpdateData} setPage={setPage}/>
             {/* <p>Filtrar por:</p> */}
             <CustomSelect options={filters} value={filterBy} onChange={(e: any) => { setFilterBy(e), setSearch("") }} required={false} />
           </div>

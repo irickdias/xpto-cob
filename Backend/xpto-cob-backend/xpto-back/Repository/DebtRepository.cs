@@ -140,8 +140,8 @@ namespace xpto_back.Repository
                 var amountStr = parts[4].Trim().Replace(",", ".");
                 var contractType = parts[5].Trim();
 
-                if (!DateTime.TryParse(dueDateStr, out var dueDate)) continue;
-                if (!decimal.TryParse(amountStr, out var amount)) continue;
+                if (!DateTime.TryParseExact(dueDateStr, "dd/MM/yyyy", new CultureInfo("pt-BR"), DateTimeStyles.None, out var dueDate)) continue; // senao estiver no formato de data BR dd/MM/yyyy, irá ignorar
+                if (!decimal.TryParse(amountStr, out var amount)) continue; // senao estiver no formato correto de decimal, irá ignorar
 
                 var debt = new Debt
                 {
