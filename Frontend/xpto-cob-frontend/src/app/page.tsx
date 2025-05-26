@@ -52,8 +52,6 @@ export default function Home() {
       });
       const json = await response.json();
 
-      //console.log("teste response", json)
-
       if (response.ok) {
         setDebts(json);
         //console.log(debts);
@@ -62,7 +60,6 @@ export default function Home() {
         toast.error("Erro ao carregar as dívidas.");
       }
 
-      // const data = await response.json();
     } catch (error) {
       console.error('Erro ao carregar as dívidas.', error);
       toast.error("Erro ao carregar as dívidas.");
@@ -78,8 +75,6 @@ export default function Home() {
       const response = await fetch(`${api}xpto/debt/update-debts`, {
         method: 'GET'
       });
-
-      console.log("teste response", response)
 
       toast.dismiss(loadingToast);
 
@@ -109,8 +104,6 @@ export default function Home() {
         method: 'GET'
       });
 
-      console.log("teste response", response)
-
       toast.dismiss(loadingToast);
 
       if (response.ok) {
@@ -139,7 +132,6 @@ export default function Home() {
         toast.error("Erro ao exportar dívidas. Aguarde um momento e tente novamente.");
       }
 
-      // const data = await response.json();
     } catch (error) {
       console.error('Erro ao enviar arquivo:', error);
       toast.error("Erro ao exportar dívidas. Aguarde um momento e tente novamente.");
